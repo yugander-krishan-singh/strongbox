@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-import org.springframework.transaction.annotation.Transactional;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.hamcrest.Matchers.*;
 
@@ -16,7 +15,6 @@ import static org.hamcrest.Matchers.*;
  * @author Przemyslaw Fusik
  */
 @IntegrationTest
-@Transactional
 public class FormDataControllerTestIT
         extends RestAssuredBaseTest
 {
