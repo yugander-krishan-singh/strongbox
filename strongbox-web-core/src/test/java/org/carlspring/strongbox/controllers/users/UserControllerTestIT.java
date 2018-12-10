@@ -22,6 +22,7 @@ import org.carlspring.strongbox.users.service.impl.XmlUserService.XmlUserService
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -32,7 +33,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.security.test.context.support.WithUserDetails;
-import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -50,11 +50,13 @@ import static org.hamcrest.CoreMatchers.startsWith;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 
 /**
  * @author Pablo Tirado
  */
 @IntegrationTest
+@Execution(CONCURRENT)
 @Transactional
 public class UserControllerTestIT
         extends RestAssuredBaseTest
@@ -67,15 +69,10 @@ public class UserControllerTestIT
     @Inject
     private PasswordEncoder passwordEncoder;
 
-    @Inject
-    private PlatformTransactionManager transactionManager;
-
     private static Stream<Arguments> usersProvider()
     {
-        return Stream.of(
-                Arguments.of(MediaType.APPLICATION_JSON_VALUE, "test-create-json"),
-                Arguments.of(MediaType.TEXT_PLAIN_VALUE, "test-create-text")
-        );
+        return Stream.of(Arguments.of(MediaType.APPLICATION_JSON_VALUE, "test-create-json"),
+                         Arguments.of(MediaType.TEXT_PLAIN_VALUE, "test-create-text"));
     }
 
     @Override
@@ -84,6 +81,7 @@ public class UserControllerTestIT
             throws Exception
     {
         super.init();
+
         setContextBaseUrl(getContextBaseUrl() + "/api/users");
     }
 
@@ -701,7 +699,9 @@ public class UserControllerTestIT
 
         assertNotNull(repositoryAccess);
         assertTrue(repositoryAccess.isPresent());
-        logger.info("$$$$$$$$$$$$$$$$$$$$$$$$$" + repositoryAccess.get().getPrivileges());
+
+        logger.info("Privileges: " + repositoryAccess.get().getPrivileges());
+
         assertTrue(repositoryAccess.get().getPrivileges().contains(mockPrivilege));
     }
 
@@ -768,6 +768,7 @@ public class UserControllerTestIT
         accessModel.addRepositoryAccess(form);
 
         String username = "userNotFound";
+
         given().contentType(MediaType.APPLICATION_JSON_VALUE)
                .accept(MediaType.APPLICATION_JSON_VALUE)
                .body(accessModel)
@@ -872,6 +873,7 @@ public class UserControllerTestIT
             dto = new AccessModelForm();
             BeanUtils.copyProperties(accessModel, dto);
         }
+
         return dto;
     }
 
