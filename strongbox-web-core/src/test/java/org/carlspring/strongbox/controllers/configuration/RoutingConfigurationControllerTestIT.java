@@ -17,15 +17,22 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.parallel.Execution;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import static io.restassured.module.mockmvc.RestAssuredMockMvc.given;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.carlspring.strongbox.controllers.configuration.RoutingConfigurationController.*;
 import static org.hamcrest.CoreMatchers.containsString;
+import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 
 /**
  * @author Pablo Tirado
  */
 @IntegrationTest
+@ExtendWith(SpringExtension.class)
+@Execution(CONCURRENT)
 public class RoutingConfigurationControllerTestIT
         extends RestAssuredBaseTest
 {
@@ -189,7 +196,7 @@ public class RoutingConfigurationControllerTestIT
 
     private MutableRoutingRules getRoutingRules()
     {
-        String url = getContextBaseUrl();
+        String url = getContextBaseUrl() + "/rules/accepted/group-releases-2/override/repositories";
 
         return given().contentType(MediaType.APPLICATION_JSON_VALUE)
                       .accept(MediaType.APPLICATION_JSON_VALUE)
