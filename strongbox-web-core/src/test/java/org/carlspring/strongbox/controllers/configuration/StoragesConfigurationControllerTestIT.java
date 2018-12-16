@@ -18,14 +18,19 @@ import java.util.*;
 
 import com.google.common.collect.ImmutableSet;
 import com.google.common.collect.Lists;
+import io.restassured.config.ObjectMapperConfig;
+import io.restassured.module.mockmvc.config.RestAssuredMockMvcConfig;
 import org.apache.http.pool.PoolStats;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.springframework.boot.test.context.SpringBootTest;
+
+import org.junit.jupiter.api.parallel.Execution;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpServerErrorException;
@@ -36,11 +41,13 @@ import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.parallel.ExecutionMode.CONCURRENT;
 
 /**
  * @author Pablo Tirado
  */
 @IntegrationTest
+@Execution(CONCURRENT)
 public class StoragesConfigurationControllerTestIT
         extends RestAssuredBaseTest
 {
@@ -410,7 +417,13 @@ public class StoragesConfigurationControllerTestIT
 
     private Storage getStorage(String storageId)
     {
-        String url = getContextBaseUrl() + "/" + storageId;
+
+        String url = getContextBaseUrl() + "/api/configuration/strongbox/storages/" + storageId;
+
+        RestAssuredMockMvcConfig config = RestAssuredMockMvcConfig.config().objectMapperConfig(
+                new ObjectMapperConfig().jackson2ObjectMapperFactory(
+                        (aClass, s) -> objectMapper
+                ));
 
         return givenCustom().accept(MediaType.APPLICATION_JSON_VALUE)
                             .when()
