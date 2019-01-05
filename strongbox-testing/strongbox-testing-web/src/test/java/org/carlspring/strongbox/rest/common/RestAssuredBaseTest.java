@@ -63,7 +63,8 @@ public abstract class RestAssuredBaseTest
         return contextBaseUrl;
     }
 
-    protected MockMvcRequestSpecification givenCustom() {
+    protected MockMvcRequestSpecification givenCustom()
+    {
         return given().config(restAssuredMockMvcConfig);
     }
 
