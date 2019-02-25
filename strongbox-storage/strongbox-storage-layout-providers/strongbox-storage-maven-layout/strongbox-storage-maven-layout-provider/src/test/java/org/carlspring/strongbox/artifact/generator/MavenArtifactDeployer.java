@@ -64,32 +64,29 @@ public class MavenArtifactDeployer
                    IOException,
                    ArtifactOperationException, ArtifactTransportException
     {
-        synchronized (ArtifactUtils.convertArtifactToPath(artifact))
+        generatePom(artifact, packaging);
+        createArchive(artifact);
+
+        deploy(artifact, storageId, repositoryId);
+        deployPOM(ArtifactUtils.getPOMArtifact(artifact), storageId, repositoryId);
+
+        if (classifiers != null)
         {
-            generatePom(artifact, packaging);
-            createArchive(artifact);
-
-            deploy(artifact, storageId, repositoryId);
-            deployPOM(ArtifactUtils.getPOMArtifact(artifact), storageId, repositoryId);
-
-            if (classifiers != null)
+            for (String classifier : classifiers)
             {
-                for (String classifier : classifiers)
-                {
-                    // We're assuming the type of the classifier is the same as the one of the main artifact
-                    Artifact artifactWithClassifier = ArtifactUtils.getArtifactFromGAVTC(artifact.getGroupId() + ":" +
-                                                                                         artifact.getArtifactId() + ":" +
-                                                                                         artifact.getVersion() + ":" +
-                                                                                         artifact.getType() + ":" +
-                                                                                         classifier);
-                    generate(artifactWithClassifier);
+                // We're assuming the type of the classifier is the same as the one of the main artifact
+                Artifact artifactWithClassifier = ArtifactUtils.getArtifactFromGAVTC(artifact.getGroupId() + ":" +
+                                                                                     artifact.getArtifactId() + ":" +
+                                                                                     artifact.getVersion() + ":" +
+                                                                                     artifact.getType() + ":" +
+                                                                                     classifier);
+                generate(artifactWithClassifier);
 
-                    deploy(artifactWithClassifier, storageId, repositoryId);
-                }
+                deploy(artifactWithClassifier, storageId, repositoryId);
             }
-
-            mergeMetadata(artifact, storageId, repositoryId);
         }
+
+        mergeMetadata(artifact, storageId, repositoryId);
     }
 
     public void mergeMetadata(Artifact artifact,
