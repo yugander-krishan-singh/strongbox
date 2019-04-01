@@ -1,8 +1,12 @@
 package org.carlspring.strongbox.storage.repository;
 
-import java.util.Map;
-
+import org.carlspring.strongbox.configuration.ProxyConfiguration;
 import org.carlspring.strongbox.storage.Storage;
+import org.carlspring.strongbox.storage.repository.remote.RemoteRepository;
+import org.carlspring.strongbox.xml.repository.CustomRepositoryConfiguration;
+
+import java.util.List;
+import java.util.Map;
 
 public interface Repository
 {
@@ -38,6 +42,16 @@ public interface Repository
     boolean allowsDirectoryBrowsing();
 
     boolean isChecksumHeadersEnabled();
+
+    ProxyConfiguration getProxyConfiguration();
+
+    RemoteRepository getRemoteRepository();
+
+    HttpConnectionPool getHttpConnectionPool();
+
+    List<CustomConfiguration> getCustomConfigurations();
+
+    CustomRepositoryConfiguration getRepositoryConfiguration();
 
     Map<String, String> getGroupRepositories();
 

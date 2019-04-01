@@ -24,10 +24,8 @@ import org.apache.http.pool.PoolStats;
 import org.hamcrest.CoreMatchers;
 import org.hamcrest.MatcherAssert;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-
-import org.junit.jupiter.api.parallel.Execution;
-
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.http.HttpStatus;
@@ -35,14 +33,13 @@ import org.springframework.http.MediaType;
 import org.springframework.web.client.HttpServerErrorException;
 import static org.carlspring.strongbox.controllers.configuration.StoragesConfigurationController.*;
 import static org.carlspring.strongbox.rest.client.RestAssuredArtifactClient.OK;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.not;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Pablo Tirado
  */
+@Disabled
 @IntegrationTest
 public class StoragesConfigurationControllerTestIT
         extends RestAssuredBaseTest
