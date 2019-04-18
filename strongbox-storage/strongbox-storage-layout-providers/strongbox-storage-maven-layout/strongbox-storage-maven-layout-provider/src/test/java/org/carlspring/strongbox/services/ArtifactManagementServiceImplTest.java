@@ -180,20 +180,16 @@ public class ArtifactManagementServiceImplTest
                                       repositoryWithoutDeployment,
                                       "org.carlspring.strongbox:strongbox-utils",
                                       "8.0");
+        File repositoryDir = getRepositoryBasedir(STORAGE0, repositoryId);
 
-        InputStream is = null;
+        String gavtc = "org.carlspring.strongbox:strongbox-utils:8.0:jar";
 
         //noinspection EmptyCatchBlock
-        try
+        try(InputStream is = generateArtifactInputStream(repositoryDir.toPath().getParent().toAbsolutePath().toString(),
+                                                                            repositoryId,
+                                                                            gavtc,
+                                                                            true);)
         {
-            String gavtc = "org.carlspring.strongbox:strongbox-utils:8.0:jar";
-
-            File repositoryDir = getRepositoryBasedir(STORAGE0, repositoryId);
-            is = generateArtifactInputStream(repositoryDir.toPath().getParent().toAbsolutePath().toString(),
-                                             repositoryId,
-                                             gavtc,
-                                             true);
-
             Artifact artifact = ArtifactUtils.getArtifactFromGAVTC(gavtc);
             RepositoryPath repositoryPath = repositoryPathResolver.resolve(STORAGE0,
                                                                            repositoryId,
@@ -208,7 +204,7 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            ResourceCloser.close(is, null);
+
         }
     }
 
@@ -226,21 +222,18 @@ public class ArtifactManagementServiceImplTest
                                       "org.carlspring.strongbox:strongbox-utils",
                                       "8.1");
 
-        InputStream is = null;
+        String gavtc = "org.carlspring.strongbox:strongbox-utils:8.1:jar";
+
+        File repositoryBasedir = getRepositoryBasedir(STORAGE0, repositoryId);
+
+        generateArtifact(repositoryBasedir.getAbsolutePath(), gavtc);
 
         //noinspection EmptyCatchBlock
-        try
+        try(InputStream is = generateArtifactInputStream(repositoryBasedir.toPath().getParent().toAbsolutePath().toString(),
+                                                                                repositoryId,
+                                                                                gavtc,
+                                                                                true);)
         {
-            String gavtc = "org.carlspring.strongbox:strongbox-utils:8.1:jar";
-
-            File repositoryBasedir = getRepositoryBasedir(STORAGE0, repositoryId);
-            generateArtifact(repositoryBasedir.getAbsolutePath(), gavtc);
-
-            is = generateArtifactInputStream(repositoryBasedir.toPath().getParent().toAbsolutePath().toString(),
-                                             repositoryId,
-                                             gavtc,
-                                             true);
-
             Artifact artifact = ArtifactUtils.getArtifactFromGAVTC(gavtc);
             RepositoryPath repositoryPath = repositoryPathResolver.resolve(STORAGE0,
                                                                            repositoryId, 
@@ -255,7 +248,7 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            ResourceCloser.close(is, null);
+            //ResourceCloser.close(is, null);
         }
     }
 
@@ -324,21 +317,18 @@ public class ArtifactManagementServiceImplTest
         createRepository(STORAGE0, repositoryGroup);
         // Test resource initialization end.
 
-        InputStream is = null;
-
         String gavtc = "org.carlspring.strongbox:strongbox-utils:8.3:jar";
 
         Artifact artifact = ArtifactUtils.getArtifactFromGAVTC(gavtc);
 
-        //noinspection EmptyCatchBlock
-        try
-        {
-            File repositoryDir = getRepositoryBasedir(STORAGE0, repositoryGroupId);
-            is = generateArtifactInputStream(repositoryDir.toPath().getParent().toAbsolutePath().toString(),
-                                             repositoryGroupId,
-                                             gavtc,
-                                             true);
+        File repositoryDir = getRepositoryBasedir(STORAGE0, repositoryGroupId);
 
+        //noinspection EmptyCatchBlock
+        try(InputStream is = generateArtifactInputStream(repositoryDir.toPath().getParent().toAbsolutePath().toString(),
+                                                         repositoryGroupId,
+                                                         gavtc,
+                                                         true);)
+        {
             RepositoryPath repositoryPath = repositoryPathResolver.resolve(STORAGE0,
                                                                            repositoryGroupId,
                                                                            ArtifactUtils.convertArtifactToPath(artifact));
@@ -352,7 +342,7 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            ResourceCloser.close(is, null);
+            //ResourceCloser.close(is, null);
         }
 
         //noinspection EmptyCatchBlock
@@ -365,7 +355,7 @@ public class ArtifactManagementServiceImplTest
             RepositoryPath repositoryPath = repositoryPathResolver.resolve(STORAGE0,
                                                                            repositoryGroupId,
                                                                            ArtifactUtils.convertArtifactToPath(artifact));
-            mavenArtifactManagementService.validateAndStore(repositoryPath, is);
+            mavenArtifactManagementService.validateAndStore(repositoryPath, null);
 
             fail("Failed to deny artifact operation for repository with disallowed re-deployments.");
         }
@@ -375,7 +365,7 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            ResourceCloser.close(is, null);
+            //ResourceCloser.close(is, null);
         }
 
         RepositoryPath repositoryPath = repositoryPathResolver.resolve(STORAGE0,
@@ -396,7 +386,7 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            ResourceCloser.close(is, null);
+            //ResourceCloser.close(is, null);
         }
 
         // Delete: Case 2: Force delete
@@ -413,7 +403,7 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            ResourceCloser.close(is, null);
+            //ResourceCloser.close(is, null);
         }
     }
 
