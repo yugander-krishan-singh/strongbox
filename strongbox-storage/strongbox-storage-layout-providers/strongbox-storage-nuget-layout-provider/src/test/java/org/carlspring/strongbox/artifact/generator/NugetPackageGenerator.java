@@ -3,7 +3,6 @@ package org.carlspring.strongbox.artifact.generator;
 import org.carlspring.commons.io.RandomInputStream;
 import org.carlspring.strongbox.artifact.coordinates.versioning.SemanticVersion;
 import org.carlspring.strongbox.io.LayoutOutputStream;
-import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.storage.metadata.nuget.Dependencies;
 import org.carlspring.strongbox.storage.metadata.nuget.Dependency;
 import org.carlspring.strongbox.storage.metadata.nuget.NugetFormatException;
@@ -97,22 +96,15 @@ public class NugetPackageGenerator
                    NoSuchAlgorithmException, 
                    NugetFormatException
     {
-        ZipOutputStream zos = null;
 
-        LayoutOutputStream layoutOutputStream = null;
-        try
+        // Make sure the artifact's parent directory exists before writing the model.
+        //noinspection ResultOfMethodCallIgnored
+        packageFile.getParentFile().mkdirs();
+
+        try(FileOutputStream fileOutputStream = new FileOutputStream(packageFile);
+            LayoutOutputStream layoutOutputStream = new LayoutOutputStream(fileOutputStream).addAlgorithm(MessageDigestAlgorithms.SHA_512);
+            ZipOutputStream zos = new ZipOutputStream(layoutOutputStream.setDigestStringifier(this::toBase64));)
         {
-            // Make sure the artifact's parent directory exists before writing the model.
-            //noinspection ResultOfMethodCallIgnored
-            packageFile.getParentFile().mkdirs();
-
-            FileOutputStream fileOutputStream = new FileOutputStream(packageFile);
-            
-            layoutOutputStream = new LayoutOutputStream(fileOutputStream);
-            layoutOutputStream.addAlgorithm(MessageDigestAlgorithms.SHA_512);
-            layoutOutputStream.setDigestStringifier(this::toBase64);
-            
-            zos = new ZipOutputStream(layoutOutputStream);
 
             addNugetNuspecFile(nuspec, zos);
             createRandomNupkgFile(zos);
@@ -127,8 +119,6 @@ public class NugetPackageGenerator
         }
         finally
         {
-            ResourceCloser.close(zos, logger);
-
             if (layoutOutputStream != null)
             {                
                 generateChecksum(packageFile, layoutOutputStream);
