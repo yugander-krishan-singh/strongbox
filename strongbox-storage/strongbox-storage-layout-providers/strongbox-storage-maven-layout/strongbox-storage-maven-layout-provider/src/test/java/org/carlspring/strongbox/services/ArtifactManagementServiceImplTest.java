@@ -48,7 +48,6 @@ import org.carlspring.strongbox.providers.io.RepositoryPathResolver;
 import org.carlspring.strongbox.providers.io.RepositoryStreamSupport.RepositoryInputStream;
 import org.carlspring.strongbox.providers.layout.Maven2LayoutProvider;
 import org.carlspring.strongbox.repository.MavenRepositoryFeatures;
-import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.storage.ArtifactResolutionException;
 import org.carlspring.strongbox.storage.ArtifactStorageException;
 import org.carlspring.strongbox.storage.repository.MavenRepositoryFactory;
@@ -248,7 +247,6 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            //ResourceCloser.close(is, null);
         }
     }
 
@@ -342,7 +340,6 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            //ResourceCloser.close(is, null);
         }
 
         //noinspection EmptyCatchBlock
@@ -365,7 +362,6 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            //ResourceCloser.close(is, null);
         }
 
         RepositoryPath repositoryPath = repositoryPathResolver.resolve(STORAGE0,
@@ -386,7 +382,6 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            //ResourceCloser.close(is, null);
         }
 
         // Delete: Case 2: Force delete
@@ -403,7 +398,6 @@ public class ArtifactManagementServiceImplTest
         }
         finally
         {
-            //ResourceCloser.close(is, null);
         }
     }
 
