@@ -101,21 +101,31 @@ public class NugetPackageGenerator
         //noinspection ResultOfMethodCallIgnored
         packageFile.getParentFile().mkdirs();
 
-        try(FileOutputStream fileOutputStream = new FileOutputStream(packageFile);
-            LayoutOutputStream layoutOutputStream = new LayoutOutputStream(fileOutputStream).addAlgorithm(MessageDigestAlgorithms.SHA_512);
-            ZipOutputStream zos = new ZipOutputStream(layoutOutputStream.setDigestStringifier(this::toBase64));)
+        LayoutOutputStream layoutOutputStream = null;
+
+        try
         {
+            FileOutputStream fileOutputStream = new FileOutputStream(packageFile);
 
-            addNugetNuspecFile(nuspec, zos);
-            createRandomNupkgFile(zos);
-            
-            String id = nuspec.getId();
+            layoutOutputStream = new LayoutOutputStream(fileOutputStream);
 
-            SemanticVersion version = nuspec.getVersion();
-            createMetadata(id, version.toString(), zos);
-            
-            createContentType(zos);
-            createRels(id, zos);
+            layoutOutputStream.addAlgorithm(MessageDigestAlgorithms.SHA_512);
+
+            layoutOutputStream.setDigestStringifier(this::toBase64);
+
+            try(ZipOutputStream zos = new ZipOutputStream(layoutOutputStream))
+            {
+                addNugetNuspecFile(nuspec, zos);
+                createRandomNupkgFile(zos);
+
+                String id = nuspec.getId();
+
+                SemanticVersion version = nuspec.getVersion();
+                createMetadata(id, version.toString(), zos);
+
+                createContentType(zos);
+                createRels(id, zos);
+            }
         }
         finally
         {
