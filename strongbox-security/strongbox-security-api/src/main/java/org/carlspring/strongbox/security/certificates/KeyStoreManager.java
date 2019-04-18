@@ -312,7 +312,6 @@ public class KeyStoreManager
         }
         finally
         {
-            ResourceCloser.close(socket, logger);
         }
     }
 

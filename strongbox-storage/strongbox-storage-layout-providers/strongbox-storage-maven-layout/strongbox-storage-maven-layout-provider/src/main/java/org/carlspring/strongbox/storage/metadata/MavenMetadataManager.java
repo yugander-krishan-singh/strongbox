@@ -8,7 +8,6 @@ import org.carlspring.strongbox.providers.io.RepositoryPath;
 import org.carlspring.strongbox.providers.io.RepositoryPathLock;
 import org.carlspring.strongbox.providers.layout.LayoutProvider;
 import org.carlspring.strongbox.providers.layout.LayoutProviderRegistry;
-import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.storage.metadata.comparators.SnapshotVersionComparator;
 import org.carlspring.strongbox.storage.metadata.comparators.VersionComparator;
 import org.carlspring.strongbox.storage.metadata.versions.MetadataVersion;
@@ -108,7 +107,7 @@ public class MavenMetadataManager
     {
         Metadata metadata;
 
-        try
+        try(InputStream is1 = is)
         {
             MetadataXpp3Reader reader = new MetadataXpp3Reader();
 
@@ -116,7 +115,6 @@ public class MavenMetadataManager
         }
         finally
         {
-            ResourceCloser.close(is, logger);
         }
 
         return metadata;
