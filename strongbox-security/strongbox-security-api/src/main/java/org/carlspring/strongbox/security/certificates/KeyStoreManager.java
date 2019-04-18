@@ -1,7 +1,5 @@
 package org.carlspring.strongbox.security.certificates;
 
-import org.carlspring.commons.io.resource.ResourceCloser;
-
 import javax.annotation.PostConstruct;
 import javax.inject.Inject;
 import javax.net.ssl.*;

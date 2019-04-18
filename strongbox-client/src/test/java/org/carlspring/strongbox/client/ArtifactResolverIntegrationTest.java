@@ -1,10 +1,11 @@
 package org.carlspring.strongbox.client;
 
 import org.carlspring.strongbox.config.ClientConfig;
-import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.service.ProxyRepositoryConnectionPoolConfigurationService;
 
 import javax.inject.Inject;
+
+import java.io.IOException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -86,8 +87,13 @@ public class ArtifactResolverIntegrationTest
         @Override
         public final void run()
         {
-            CloseableRestResponse response = artifactResolver.get(url);
-            ResourceCloser.close(response, LOGGER);
+            try(CloseableRestResponse response = artifactResolver.get(url))
+            {
+
+            }
+            catch (IOException e)
+            {
+            }
         }
 
     }
