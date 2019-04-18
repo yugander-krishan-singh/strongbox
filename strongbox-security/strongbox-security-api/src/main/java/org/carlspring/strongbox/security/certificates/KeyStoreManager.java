@@ -279,22 +279,19 @@ public class KeyStoreManager
             proxyAuthenticator.getCredentials().set(credentials);
         }
 
-        Socket proxySocket = socksProxy != null ? new Socket(socksProxy) : null;
-
-        if (proxySocket != null)
+        try(Socket proxySocket = socksProxy != null ? new Socket(socksProxy) : null)
         {
-            proxySocket.connect(new InetSocketAddress(host, port));
-        }
+            if (proxySocket != null)
+            {
+                proxySocket.connect(new InetSocketAddress(host, port));
+            }
 
-        try
-        {
             handshake(ctx, proxySocket, host, port);
             return tm.chain;
         }
         finally
         {
             proxyAuthenticator.getCredentials().remove();
-            ResourceCloser.close(proxySocket, logger);
         }
     }
 
