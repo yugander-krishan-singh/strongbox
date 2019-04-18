@@ -7,7 +7,6 @@ import org.carlspring.strongbox.controllers.support.ErrorResponseEntityBody;
 import org.carlspring.strongbox.controllers.support.ListEntityBody;
 import org.carlspring.strongbox.controllers.support.ResponseEntityBody;
 import org.carlspring.strongbox.providers.io.RepositoryPathResolver;
-import org.carlspring.strongbox.resource.ResourceCloser;
 import org.carlspring.strongbox.services.ArtifactResolutionService;
 import org.carlspring.strongbox.services.ConfigurationManagementService;
 
@@ -260,9 +259,8 @@ public abstract class BaseController
                                   HttpServletResponse response)
             throws IOException
     {
-        OutputStream os = response.getOutputStream();
 
-        try
+        try(OutputStream os = response.getOutputStream())
         {
             long totalBytes = 0L;
 
@@ -282,8 +280,7 @@ public abstract class BaseController
         }
         finally
         {
-            ResourceCloser.close(is, logger);
-            ResourceCloser.close(os, logger);
+
         }
     }
 
